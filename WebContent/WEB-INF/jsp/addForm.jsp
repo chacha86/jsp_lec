@@ -10,7 +10,7 @@
 <body>
 	<form action="/web-exam1/article">
 		제목 : <input type="text" name="title" />
-		<br>
+		<br> 
 		내용 : <input type="text" name="body" />
 		<br>
 		<input type="hidden" name="mid" value="1"/>
