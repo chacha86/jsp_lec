@@ -14,34 +14,32 @@ public class TestServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
-		response.setCharacterEncoding("UTF-8"); // 브라우저 출력기 인코딩 utf-8로 설정
+		response.setCharacterEncoding("UTF-8"); 
 		response.setContentType("text/html; charset=utf-8");
-	
-		PrintWriter out = response.getWriter(); // 브라우저 출력기
+		PrintWriter out = response.getWriter(); 
 		
-		// 차태진 : chacha
-		// 홍길동 : hong
+		String action = request.getParameter("action");
 		
-		String loginId = request.getParameter("loginId");
-		
-		System.out.println(loginId);
-		
-		String name = "";
-		
-		if(loginId.equals("chacha")) {
-			name = "차태진";
-		} else if(loginId.equals("hong")) {
-			name = "홍길동";
+		if(action.equals("printGuGu1")) {
+			for(int i = 2; i < 10; i++) {
+				for(int j = 1; j < 10; j++) {
+					out.println(i + " * " + j + " = " + i * j + "<br>");
+				}
+			}
+		} else if(action.equals("printGuGu2")) {
+			String limit = request.getParameter("limit");
+			int limit2 = Integer.parseInt(limit);
+			
+			for(int i = 2; i <= limit2; i++) {
+				for(int j = 1; j < 10; j++) {
+					out.println(i + " * " + j + " = " + i * j + "<br>");
+				}
+			}
+		} else if(action.equals("hello")) {
+			String name = request.getParameter("name");
+			int age = Integer.parseInt(request.getParameter("age"));
+			
+			out.println("안녕하세요 저는 " + age + "살 " + name + "입니다.");
 		}
-		
-		out.println("<h1 style='color:blue'>" + name + "님! 안녕하세요.</h1>");
-		
-
 	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-
 }
