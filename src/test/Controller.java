@@ -13,6 +13,8 @@ import javax.servlet.http.HttpSession;
 
 import board.article.Article;
 import board.article.ArticleDao;
+import board.member.Member;
+import board.member.MemberDao;
 
 @WebServlet("/article")
 public class Controller extends HttpServlet {
@@ -23,6 +25,8 @@ public class Controller extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		
 		ArticleDao dao = new ArticleDao();
+		MemberDao mdao = new MemberDao();
+		
 		ArrayList<Article> articles = dao.getArticles();
 		
 		String action = request.getParameter("action");
@@ -41,6 +45,9 @@ public class Controller extends HttpServlet {
 			String title = request.getParameter("title");
 			String body = request.getParameter("body");
 			int mid = Integer.parseInt(request.getParameter("mid"));
+			
+			Member loginedMember = mdao.getMemberById(mid);
+			request.setAttribute("loginedMember", loginedMember);
 			
 			dao.insertArticle(title, body, mid);
 			
@@ -63,8 +70,9 @@ public class Controller extends HttpServlet {
 			request.setAttribute("myData2", article);
 			dest = "WEB-INF/jsp/detail.jsp";
 		} else if(action.equals("showAdd")) {
-			
+						
 			dest = "WEB-INF/jsp/addForm.jsp";
+						
 		} else if(action.equals("showUpdate")) {
 			
 			int id = Integer.parseInt(request.getParameter("id"));
@@ -72,7 +80,42 @@ public class Controller extends HttpServlet {
 			request.setAttribute("myData3", article);
 			
 			dest = "WEB-INF/jsp/updateForm.jsp";
-		}
+			
+		} else if(action.equals("showLogin")) {
+			dest = "WEB-INF/jsp/loginForm.jsp";
+		} else if(action.equals("doLogin")) {
+			
+			String loginId = request.getParameter("loginId");
+			String loginPw = request.getParameter("loginPw");
+			
+			Member loginedMember = mdao.getMemberByLoginIdAndLoginPw(loginId, loginPw);
+			
+			if(loginedMember != null) {
+				
+				// session 저장소 저장하는 법
+				HttpSession session = request.getSession();
+				session.setAttribute("loginedMember", loginedMember);
+				
+				//request.setAttribute("loginedMember", loginedMember);
+				dest = "WEB-INF/jsp/list.jsp";
+				
+			} else {
+				dest = "WEB-INF/jsp/loginFailed.jsp";
+			}
+			
+		} else if(action.equals("showMember")) {
+			dest = "WEB-INF/jsp/memberForm.jsp";
+			
+		} else if(action.equals("doInsertMember")) {
+			
+			String loginId = request.getParameter("loginId");
+			String loginPw = request.getParameter("loginPw");
+			String nickname = request.getParameter("nickname");
+			
+			mdao.insertMember(loginId, loginPw, nickname);
+			
+			dest = "WEB-INF/jsp/loginForm.jsp";
+		} 
 		
 		request.setAttribute("myData", dao.getArticles());
 		
